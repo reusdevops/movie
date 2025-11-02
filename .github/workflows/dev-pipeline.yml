@@ -27,11 +27,11 @@ jobs:
       docker_image_tag: latest
     secrets: inherit
 
-  # deploy:
-  #   needs: build
-  #   uses: reusdevops/cicd/.github/workflows/deploy.yaml@dev
-  #   permissions:
-  #     contents: write
-  #   with:
-  #     environment: dev
-  #   secrets: inherit
+  deploy:
+    needs: build
+    uses: reusdevops/cicd/.github/workflows/deploy.yaml@dev
+    permissions:
+      contents: write
+    with:
+      environment: dev
+    secrets: inherit
