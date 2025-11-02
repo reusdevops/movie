@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
   Get,
+  HttpException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -164,5 +165,39 @@ export class AuthController {
 
     response.clearCookie('refreshToken');
     return { message: 'Successfully logged out' };
+  }
+
+  @Get('validate')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Validate access token',
+    description: 'Validates a Bearer JWT passed in the Authorization header',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Token is valid',
+    schema: { example: { valid: true, user: { sub: 'uuid', email: 'a@b.com', role: 'free' } } },
+  })
+  @ApiResponse({ status: 401, description: 'Token is invalid or missing' })
+  async validateToken(@Req() request: Request) {
+    const authHeader = request.headers['authorization'] || request.headers['Authorization'];
+    if (!authHeader || Array.isArray(authHeader)) {
+      throw new HttpException({ valid: false }, HttpStatus.UNAUTHORIZED);
+    }
+
+    const parts = authHeader.split(' ');
+    if (parts.length !== 2 || parts[0] !== 'Bearer') {
+      throw new HttpException({ valid: false }, HttpStatus.UNAUTHORIZED);
+    }
+
+    const token = parts[1];
+
+    try {
+      const decoded: any = this.authService['jwtService'].verify(token);
+
+      return { valid: true, user: decoded };
+    } catch (err) {
+      throw new HttpException({ valid: false }, HttpStatus.UNAUTHORIZED);
+    }
   }
 }
