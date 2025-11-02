@@ -16,16 +16,16 @@ jobs:
       environment: dev
     secrets: inherit
 
-  # build:
-  #   needs: test-node
-  #   uses: reusdevops/cicd/.github/workflows/build.yaml@dev
-  #   permissions:
-  #     contents: write
-  #   with:
-  #     environment: dev
-  #     docker_image_name: transcoding
-  #     docker_image_tag: latest
-  #   secrets: inherit
+  build:
+    needs: test-node
+    uses: reusdevops/cicd/.github/workflows/build.yaml@dev
+    permissions:
+      contents: write
+    with:
+      environment: dev
+      docker_image_name: movie
+      docker_image_tag: latest
+    secrets: inherit
 
   # deploy:
   #   needs: build
