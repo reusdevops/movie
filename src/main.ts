@@ -68,6 +68,8 @@ async function bootstrap() {
     res.json(document);
   });
   const port = process.env.PORT || 3000;
+  console.log('port:', port)
+  console.log('app version:', process.env.APP_VERSION)
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
   console.log(`Swagger documentation: http://localhost:${port}/api/docs`);
