@@ -17,9 +17,7 @@ import { HttpInterceptor } from './interceptors/http.interceptor';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
-        console.log("DB_HOST", configService.get('DB_HOST'));
-        return {
+      useFactory: (configService: ConfigService) => ({
           type: 'mysql',
           host: configService.get('DB_HOST'),
           port: configService.get('DB_PORT'),
@@ -30,8 +28,7 @@ import { HttpInterceptor } from './interceptors/http.interceptor';
           synchronize: true,
           charset: 'utf8mb4',
           timezone: 'Z',
-        };
-      }
+    })
 
       ,
       inject: [ConfigService],
