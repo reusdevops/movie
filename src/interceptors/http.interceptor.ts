@@ -13,7 +13,6 @@ import { catchError, map } from 'rxjs/operators';
 
 export interface HttpResponse<T> {
   success: boolean;
-  statusCode: number;
   message: string;
   data?: T;
   error?: string;
@@ -55,7 +54,6 @@ export class HttpInterceptor<T> implements NestInterceptor<T, HttpResponse<T>> {
 
         return {
           success: true,
-          statusCode: response.statusCode,
           message,
           data: responseData,
           meta: {
@@ -78,9 +76,8 @@ export class HttpInterceptor<T> implements NestInterceptor<T, HttpResponse<T>> {
         let errors: any[] = [];
 
         if (error instanceof HttpException) {
-          statusCode = error.getStatus();
           const errorResponse = error.getResponse();
-
+          statusCode = error.getStatus()
           if (typeof errorResponse === 'string') {
             message = errorResponse;
             errorName = error.name;
@@ -97,7 +94,6 @@ export class HttpInterceptor<T> implements NestInterceptor<T, HttpResponse<T>> {
 
         const errorResponse: HttpResponse<null> = {
           success: false,
-          statusCode,
           message,
           error: errorName,
           ...(errors.length > 0 && { errors }),
