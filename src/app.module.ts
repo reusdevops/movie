@@ -17,18 +17,23 @@ import { HttpInterceptor } from './interceptors/http.interceptor';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
-        charset: 'utf8mb4',
-        timezone: 'Z',
-      }),
+      useFactory: (configService: ConfigService) => {
+        console.log("DB_HOST", configService.get('DB_HOST'));
+        return {
+          type: 'mysql',
+          host: configService.get('DB_HOST'),
+          port: configService.get('DB_PORT'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_DATABASE'),
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: true,
+          charset: 'utf8mb4',
+          timezone: 'Z',
+        };
+      }
+
+      ,
       inject: [ConfigService],
     }),
     RolesModule,
