@@ -9,6 +9,8 @@ import { MoviesModule } from './movies/movies.module';
 import { RolesModule } from './roles/roles.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { StorageModule } from './storage/storage.module'; // Add this
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpInterceptor } from './interceptors/http.interceptor';
 
 @Module({
   imports: [
@@ -37,6 +39,12 @@ import { StorageModule } from './storage/storage.module'; // Add this
     StorageModule, // Add this
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpInterceptor,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
