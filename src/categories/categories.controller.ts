@@ -21,7 +21,7 @@ export class CategoriesController {
   @Post()
   @ApiOperation({
     summary: 'Create a new category',
-    description: 'Creates a new category with the provided information. Slug must be unique.',
+    description: 'Creates a new category with the provided information. Slug and nae must be unique.',
   })
   @ApiBody({
     type: CreateCategoryDto,
@@ -31,7 +31,7 @@ export class CategoriesController {
         summary: 'Example category',
         value: {
           name: 'Action',
-          slug: 'action',
+          slug: 'action-movies',
           description: 'Action-packed movies and shows',
           active: true,
           thumbnail_url: 'https://example.com/action-thumbnail.jpg',
