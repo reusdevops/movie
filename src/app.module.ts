@@ -11,6 +11,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { StorageModule } from './storage/storage.module'; // Add this
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpInterceptor } from './interceptors/http.interceptor';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { HttpInterceptor } from './interceptors/http.interceptor';
     UsersModule,
     MoviesModule,
     SubscriptionsModule,
-    StorageModule, // Add this
+    StorageModule,
+    CategoriesModule, // Add this
   ],
   controllers: [AppController],
   providers: [
