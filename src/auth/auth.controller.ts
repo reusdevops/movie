@@ -11,6 +11,7 @@ import {
   Get,
   HttpException,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -105,48 +106,48 @@ export class AuthController {
     return data;
   }
 
-  @Get('refresh')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Refresh access token',
-    description: 'Gets new access token using refresh token from cookie',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'New access token generated',
-    schema: {
-      example: {
-        access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-      },
-    },
-  })
-  @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
-  async refresh(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    const refreshToken = request.cookies['refreshToken'];
+  // @Get('refresh')
+  // @HttpCode(HttpStatus.OK)
+  // @ApiOperation({
+  //   summary: 'Refresh access token',
+  //   description: 'Gets new access token using refresh token from cookie',
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'New access token generated',
+  //   schema: {
+  //     example: {
+  //       access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  //     },
+  //   },
+  // })
+  // @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
+  // async refresh(
+  //   @Req() request: Request,
+  //   @Res({ passthrough: true }) response: Response,
+  // ) {
+  //   const refreshToken = request.cookies['refreshToken'];
 
-    if (!refreshToken) {
-      response.status(HttpStatus.UNAUTHORIZED);
-      return { message: 'Refresh token not found' };
-    }
+  //   if (!refreshToken) {
+  //     response.status(HttpStatus.UNAUTHORIZED);
+  //     return { message: 'Refresh token not found' };
+  //   }
 
-    const decoded: any = this.authService['jwtService'].decode(refreshToken);
-    const tokens = await this.authService.refreshTokens(
-      decoded.sub,
-      refreshToken,
-    );
+  //   const decoded: any = this.authService['jwtService'].decode(refreshToken);
+  //   const tokens = await this.authService.refreshTokens(
+  //     decoded.sub,
+  //     refreshToken,
+  //   );
 
-    response.cookie('refreshToken', tokens.refresh_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+  //   response.cookie('refreshToken', tokens.refresh_token, {
+  //     httpOnly: true,
+  //     secure: process.env.NODE_ENV === 'production',
+  //     sameSite: 'strict',
+  //     maxAge: 7 * 24 * 60 * 60 * 1000,
+  //   });
 
-    return { access_token: tokens.access_token };
-  }
+  //   return { access_token: tokens.access_token };
+  // }
 
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
@@ -183,13 +184,12 @@ export class AuthController {
   async validateToken(@Req() request: Request) {
     const authHeader = request.headers['authorization'] || request.headers['Authorization'];
     if (!authHeader || Array.isArray(authHeader)) {
-      console.log("Missing Token");
       throw new UnauthorizedException("Missing Token");
     }
 
     const parts = authHeader.split(' ');
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
-      throw new UnauthorizedException("Invalid Token");
+      throw new BadRequestException("Invalid Token Format");
     }
 
     const token = parts[1];

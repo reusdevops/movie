@@ -70,34 +70,34 @@ export class MoviesController {
   @ApiResponse({ status: 201, description: 'Movie successfully uploaded' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  @UseInterceptors(
-    FileFieldsInterceptor(
-      [
-        { name: 'poster', maxCount: 1 },
-        { name: 'video', maxCount: 1 },
-        { name: 'trailer', maxCount: 1 },
-      ],
-      {
-        storage: diskStorage({
-          destination: (req, file, cb) => {
-            let uploadPath = './uploads/';
-            if (file.fieldname === 'poster') uploadPath += 'posters';
-            else if (file.fieldname === 'video') uploadPath += 'videos';
-            else if (file.fieldname === 'trailer') uploadPath += 'trailers';
-            cb(null, uploadPath);
-          },
-          filename: (req, file, cb) => {
-            const uniqueSuffix =
-              Date.now() + '-' + Math.round(Math.random() * 1e9);
-            cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
-          },
-        }),
-        limits: {
-          fileSize: 500 * 1024 * 1024,
-        },
-      },
-    ),
-  )
+  // @UseInterceptors(
+  //   FileFieldsInterceptor(
+  //     [
+  //       { name: 'poster', maxCount: 1 },
+  //       { name: 'video', maxCount: 1 },
+  //       { name: 'trailer', maxCount: 1 },
+  //     ],
+  //     {
+  //       storage: diskStorage({
+  //         destination: (req, file, cb) => {
+  //           let uploadPath = './uploads/';
+  //           if (file.fieldname === 'poster') uploadPath += 'posters';
+  //           else if (file.fieldname === 'video') uploadPath += 'videos';
+  //           else if (file.fieldname === 'trailer') uploadPath += 'trailers';
+  //           cb(null, uploadPath);
+  //         },
+  //         filename: (req, file, cb) => {
+  //           const uniqueSuffix =
+  //             Date.now() + '-' + Math.round(Math.random() * 1e9);
+  //           cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
+  //         },
+  //       }),
+  //       limits: {
+  //         fileSize: 500 * 1024 * 1024,
+  //       },
+  //     },
+  //   ),
+  // )
   async create(
     @Body(ValidationPipe) createMovieDto: CreateMovieDto,
     @UploadedFiles()

@@ -5,10 +5,16 @@ export class Category {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @Column()
+    @Column({
+        unique: true,
+        length: 50,
+    })
     name: string
 
-    @Column()
+    @Column({
+        unique: true,
+        length: 50,
+    })
     slug: string
 
     @Column()
