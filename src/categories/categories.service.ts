@@ -59,8 +59,8 @@ export class CategoriesService {
     }
 
     // Update category fields
-    const updatedCategory = this.categoryRepository.merge(category, updateCategoryDto);
-    return await this.categoryRepository.save(updatedCategory);
+    Object.assign(category, updateCategoryDto);
+    return await this.categoryRepository.save(category);
   }
 
   async remove(id: string): Promise<void> {
