@@ -10,6 +10,7 @@ import {
   UseGuards,
   Get,
   HttpException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -182,12 +183,13 @@ export class AuthController {
   async validateToken(@Req() request: Request) {
     const authHeader = request.headers['authorization'] || request.headers['Authorization'];
     if (!authHeader || Array.isArray(authHeader)) {
-      throw new HttpException({ valid: false }, HttpStatus.UNAUTHORIZED);
+      console.log("Missing Token");
+      throw new UnauthorizedException("Missing Token");
     }
 
     const parts = authHeader.split(' ');
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
-      throw new HttpException({ valid: false }, HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException("Invalid Token");
     }
 
     const token = parts[1];
@@ -195,9 +197,12 @@ export class AuthController {
     try {
       const decoded: any = this.authService['jwtService'].verify(token);
 
-      return { valid: true, user: decoded };
+      return {
+        access_token: token,
+        user: decoded,
+      };
     } catch (err) {
-      throw new HttpException({ valid: false }, HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException("Invalid Token");
     }
   }
 }
